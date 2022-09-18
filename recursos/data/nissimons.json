@@ -1,0 +1,9 @@
+{
+	"charmander": {
+		"nome": "CHARMANDER",
+		"tipos": ["fogo"],
+		"stats": [50, 52, 43, 65, 60, 60],
+		"ataques": [["scratch", 0], [0, 0]],
+		"level": [3, 10]
+	}
+}
