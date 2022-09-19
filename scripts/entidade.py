@@ -11,11 +11,11 @@ class Entidade():
 		self.moverCount = 0
 		self.moveuCount = 0
 		self.altura = 1
-		self.x = x*16
-		self.y = y*16
-		self.xMovendo = x*16
+		self.x = x
+		self.y = y
+		self.xMovendo = x
 		self.warpPraIr = None
-		self.yMovendo = y*16
+		self.yMovendo = y
 		self.movendo = [False, [0, 1]]
 		self.dentroDeWarp = None #id do warp que usou para nao entrar num warp enquanto sai dele.
 	

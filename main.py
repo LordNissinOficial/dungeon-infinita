@@ -21,8 +21,9 @@ def main():
 		cenaManager.update()
 		cenaManager.show(tela)
 		jogo = cenaManager.estados[cenaManager.estado]		
-		tela.blit(fonte.render(str(round(clock.get_fps())), 0, (100, 255, 255), (0, 0, 0)), (40, 40))
-		tela.blit(fonte.render(str((jogo.camera.x, jogo.camera.y)), 0, (100, 255, 255), (0, 0, 0)), (40, 60))
+#		tela.blit(fonte.render(str(round(clock.get_fps())), 0, (237, 230, 200), (52, 49, 29)), (40, 40))
+#		tela.blit(fonte.render(str((jogo.botoes["joystick"].poderX, jogo.botoes["joystick"].poderY)), 0, (100, 255, 255), (0, 0, 0)), (40, 60))
+#		tela.blit(fonte.render(str((jogo.botoes["joystick"].handlerX, jogo.botoes["joystick"].handlerY)), 0, (100, 255, 255), (0, 0, 0)), (40, 80))
 		update()
 		clock.tick(fps)
 

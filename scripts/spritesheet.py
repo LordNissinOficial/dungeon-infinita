@@ -9,7 +9,7 @@ class SpriteSheet():
 		self.sprite = loadImage("recursos/sprites/"+filename+".png").convert_alpha()
 		
 	def load(self, x, y, largura, altura):
-		return self.sprite.subsurface((x*8, y*8, largura*8, altura*8))
+		return self.sprite.subsurface((x, y, largura, altura))
 		#if filename not in self.sprites.keys():
 #			self.sprites[filename] = loadImage(self.path+filename+".png")
 #		return self.sprites[filename].subsurface((x*8, y*8, largura*8, altura*8))

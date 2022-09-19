@@ -1,31 +1,30 @@
-from pygame import Surface
+from pygame import (Surface, event)
 from scripts.config import *
 from scripts.camera import Camera
 from scripts.jogador import Jogador
-
+from scripts.mapaManager import MapaManager
+from scripts.uiComponentes import Joystick
+from pygame import (QUIT, FINGERDOWN, FINGERUP, FINGERMOTION)
 class Jogo():
 	def __init__(self, cenaManager):
 		self.spriteManager = cenaManager.spriteManager
 		self.spriteManager.load("spritesheets/ui")
+		self.mapaManager = MapaManager()
+		self.botoes = {}
 		self.camera = Camera()	
-		self.jogador = Jogador(192-16, 108-16, self)
+		self.jogador = Jogador(48, 48, self)
 		self.display = Surface(DISPLAY_TAMANHO).convert()
 		self.mapaDisplay = Surface((DISPLAY_TAMANHO)).convert()
 		#self.mapaManager = MapaManager(self.camera,  self)
 		self.botoes = {}
 	
 	def setUp(self, cenaManager):
+		event.set_blocked(None)
+		event.set_allowed([QUIT, FINGERDOWN, FINGERUP, FINGERMOTION])
 		self.setUpBotoes(cenaManager)
 		
 	def setUpBotoes(self, cenaManager):
-		cenaManager.botoes["cima"].setFuncao(lambda: self.moverJogador(0, -1), True)
-		cenaManager.botoes["baixo"].setFuncao(lambda: self.moverJogador(0, 1), True)
-		cenaManager.botoes["esquerda"].setFuncao(lambda: self.moverJogador(-1, 0), True)
-		cenaManager.botoes["direita"].setFuncao(lambda: self.moverJogador(1, 0), True)
-		
-		cenaManager.botoes["b"].setFuncao(None, False)
-		cenaManager.botoes["a"].setFuncao(self.a, False)
-		cenaManager.botoes["a"].setFuncaoSolto(self.aSolto)
+		self.botoes["joystick"] = Joystick(40, 180-40, 30)
 	
 	def moverJogador(self, x, y):
 		self.jogador.mover(x, y, self)
@@ -67,7 +66,22 @@ class Jogo():
 		self.jogador.movendo[1] = direcao
 		self.jogador.updateAnimacao()
 		self.jogador.andarAutomatico = 1
-		
+	
+	def lidarEventos(self, eventos):
+		for evento in eventos:
+			#print(23)
+			if evento.type==QUIT:
+				self.rodando = False
+			elif evento.type in [FINGERDOWN, FINGERMOTION]:
+				dedo = {"id": evento.finger_id, "x": int(evento.x*DISPLAY_TAMANHO[0]), "y": int(evento.y*DISPLAY_TAMANHO[1])}
+				for botao in self.botoes:
+					self.botoes[botao].pressionandoDedo(dedo)
+				
+			elif evento.type==FINGERUP:
+				dedo = {"id": evento.finger_id, "x": int(evento.x*DISPLAY_TAMANHO[0]), "y": int(evento.y*DISPLAY_TAMANHO[1])}
+				for botao in self.botoes:
+					self.botoes[botao].tirandoDedo(dedo)
+					
 	def update(self, cenaManager):
 
 		if not cenaManager.transicao.fading:
@@ -79,6 +93,7 @@ class Jogo():
 			#self.jogador.movendo[0] = False
 #			self.jogador.x = self.jogador.xMovendo
 #			self.jogador.y = self.jogador.yMovendo
+		self.moverJogador(self.botoes["joystick"].poderX, self.botoes["joystick"].poderY)
 		self.camera.moverPara(self.jogador.x, self.jogador.y)
 		
 		#self.mapaManager.updateAnimacoes(self.camera)
@@ -89,12 +104,15 @@ class Jogo():
 				self.fadeBatalha()
 
 	def show(self):
-		self.display.fill((55, 58, 62))		
+		self.display.fill((52, 49, 29))		
 #		if self.camera.mudouPosicao() or True:
 #			self.mapaManager.updateDisplay(self.camera)
 
 		#self.mapaManager.show(self.display)
 		#self.jogador.show(self.display, self.camera, self.mapaManager.mapas["centro"].offsetX, self.mapaManager.mapas["centro"].offsetY)
+		self.mapaManager.show(self.display, self.camera)
 		self.jogador.show(self.display, self.camera)
+		for botao in self.botoes.values():
+			botao.show(self.display)
 #		if self.dialogoManager.emDialogo:
 #			self.dialogoManager.show(self.display)
