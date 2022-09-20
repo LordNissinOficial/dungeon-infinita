@@ -4,7 +4,7 @@ from pygame.display import (set_mode, update)
 from pygame.locals import (DOUBLEBUF, FULLSCREEN)
 from scripts.cenaManager import CenaManager
 from profilehooks import profile
-
+import math
 init()
 
 #@profile(filename="profile.prof")
@@ -21,9 +21,9 @@ def main():
 		cenaManager.update()
 		cenaManager.show(tela)
 		jogo = cenaManager.estados[cenaManager.estado]		
-#		tela.blit(fonte.render(str(round(clock.get_fps())), 0, (237, 230, 200), (52, 49, 29)), (40, 40))
-#		tela.blit(fonte.render(str((jogo.botoes["joystick"].poderX, jogo.botoes["joystick"].poderY)), 0, (100, 255, 255), (0, 0, 0)), (40, 60))
-#		tela.blit(fonte.render(str((jogo.botoes["joystick"].handlerX, jogo.botoes["joystick"].handlerY)), 0, (100, 255, 255), (0, 0, 0)), (40, 80))
+		tela.blit(fonte.render(str(round(clock.get_fps())), 0, (237, 230, 200), (52, 49, 29)), (40, 40))
+#		tela.blit(fonte.render(str((jogo.botoes["joystick"].dedoPressionando, jogo.dedos)), 0, (100, 255, 255), (0, 0, 0)), (40, 60))
+#		tela.blit(fonte.render(str((jogo.jogador.x, jogo.jogador.y)), 0, (100, 255, 255), (0, 0, 0)), (40, 80))
 		update()
 		clock.tick(fps)
 

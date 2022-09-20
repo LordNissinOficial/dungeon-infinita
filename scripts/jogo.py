@@ -5,11 +5,14 @@ from scripts.jogador import Jogador
 from scripts.mapaManager import MapaManager
 from scripts.uiComponentes import Joystick
 from pygame import (QUIT, FINGERDOWN, FINGERUP, FINGERMOTION)
+import math
+
 class Jogo():
 	def __init__(self, cenaManager):
 		self.spriteManager = cenaManager.spriteManager
 		self.spriteManager.load("spritesheets/ui")
 		self.mapaManager = MapaManager()
+		self.dedos = {}
 		self.botoes = {}
 		self.camera = Camera()	
 		self.jogador = Jogador(48, 48, self)
@@ -17,6 +20,7 @@ class Jogo():
 		self.mapaDisplay = Surface((DISPLAY_TAMANHO)).convert()
 		#self.mapaManager = MapaManager(self.camera,  self)
 		self.botoes = {}
+		self.mapaManager.gerarLevel()
 	
 	def setUp(self, cenaManager):
 		event.set_blocked(None)
@@ -24,7 +28,7 @@ class Jogo():
 		self.setUpBotoes(cenaManager)
 		
 	def setUpBotoes(self, cenaManager):
-		self.botoes["joystick"] = Joystick(40, 180-40, 30)
+		self.botoes["joystick"] = Joystick(40, DISPLAY_TAMANHO[1]-40, 30)
 	
 	def moverJogador(self, x, y):
 		self.jogador.mover(x, y, self)
@@ -74,11 +78,14 @@ class Jogo():
 				self.rodando = False
 			elif evento.type in [FINGERDOWN, FINGERMOTION]:
 				dedo = {"id": evento.finger_id, "x": int(evento.x*DISPLAY_TAMANHO[0]), "y": int(evento.y*DISPLAY_TAMANHO[1])}
+				self.dedos[dedo["id"]] = dedo
 				for botao in self.botoes:
 					self.botoes[botao].pressionandoDedo(dedo)
 				
 			elif evento.type==FINGERUP:
 				dedo = {"id": evento.finger_id, "x": int(evento.x*DISPLAY_TAMANHO[0]), "y": int(evento.y*DISPLAY_TAMANHO[1])}
+				if dedo["id"] in self.dedos.keys():
+					del self.dedos[dedo["id"]]
 				for botao in self.botoes:
 					self.botoes[botao].tirandoDedo(dedo)
 					
@@ -93,7 +100,8 @@ class Jogo():
 			#self.jogador.movendo[0] = False
 #			self.jogador.x = self.jogador.xMovendo
 #			self.jogador.y = self.jogador.yMovendo
-		self.moverJogador(self.botoes["joystick"].poderX, self.botoes["joystick"].poderY)
+		angulo = self.botoes["joystick"].anguloPara()
+		self.moverJogador(math.cos(angulo)*self.botoes["joystick"].poder, math.sin(angulo)*self.botoes["joystick"].poder)
 		self.camera.moverPara(self.jogador.x, self.jogador.y)
 		
 		#self.mapaManager.updateAnimacoes(self.camera)

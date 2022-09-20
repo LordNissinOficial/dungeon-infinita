@@ -18,8 +18,8 @@ class Camera:
 		self.yAntigo = self.y
 		novoX = (self.x - (x-DISPLAY_TAMANHO[0]//2))
 		novoY = (self.y - (y-DISPLAY_TAMANHO[1]//2))	
-		self.x -= novoX/5
-		self.y -= novoY/5
+		self.x -= novoX
+		self.y -= novoY
 		if abs(novoX)<1:
 			self.x -= novoX
 		if abs(novoY)<1:

@@ -56,56 +56,50 @@ class Joystick:
 		self.area = area
 		self.x = x
 		self.y = y
+		self.a = 0
 		self.handlerX = x
 		self.handlerY = y
 		self.dedoPressionando = None
-		self.poderXVerdadeiro = 0
-		self.poderYVerdadeiro = 0
-		self.poderX = 0
-		self.poderY = 0
-		
+		self.poder = 0
+		self.poderVerdadeiro = 0
 		self.poderMaximo = self.area*0.6
 	
-	def anguloPara(self, pos1, pos2):
-		return 180-math.atan2(pos2[1]-pos1[1], pos2[0]-pos1[0])
+	def anguloPara(self):
+		deltaX = self.handlerX-self.x
+		deltaY = self.handlerY-self.y
+		rads = math.atan2(-deltaY, deltaX)
+		rads %= 2*math.pi
+		return -rads
 	
 	def dentro(self, dedo):
 		return (dedo["x"]-self.x)**2 + (dedo["y"]-self.y)**2 < self.area**2
+	
+	def calcularDistancia(self):
+		return math.sqrt((self.handlerX-self.x)**2 + (self.handlerY-self.y)**2)
 		
 	def pressionandoDedo(self, dedo):
-		if self.dedoPressionando and self.dedoPressionando!=dedo["id"]: return
-		if self.dedoPressionando!=dedo["id"] and not self.dentro(dedo): return
+		if self.dedoPressionando!=None and self.dedoPressionando!=dedo["id"]: return
+		if not self.dedoPressionando!=None and not self.dentro(dedo): return
+
 		self.dedoPressionando = dedo["id"]
 		self.handlerX = dedo["x"]
 		self.handlerY = dedo["y"]
 
-		self.poderXVerdadeiro = self.handlerX-self.x#13
-		#print(self.poderX)
-		if abs(self.poderXVerdadeiro) > self.poderMaximo:
-			diff = self.poderMaximo-self.poderXVerdadeiro-self.poderMaximo*(self.poderXVerdadeiro<0)*2
-			self.handlerX += diff
-			if self.poderXVerdadeiro<0:
-				self.poderXVerdadeiro = -self.poderMaximo
-			else:
-				self.poderXVerdadeiro = self.poderMaximo
-
-		self.poderYVerdadeiro = self.handlerY-self.y
-		if abs(self.poderYVerdadeiro) > self.poderMaximo:
-			diff = self.poderMaximo-self.poderYVerdadeiro-self.poderMaximo*(self.poderYVerdadeiro<0)*2
-			self.handlerY += diff
-			if self.poderYVerdadeiro<0:
-				self.poderYVerdadeiro = -self.poderMaximo
-			else:
-				self.poderYVerdadeiro = self.poderMaximo
+		self.poderVerdadeiro = self.calcularDistancia()
+		if self.poderVerdadeiro>self.poderMaximo:
+			diff = self.poderMaximo-self.poderVerdadeiro
+			angulo = self.anguloPara()
+			self.handlerX += math.cos(angulo)*diff
+			self.handlerY += math.sin(angulo)*diff
+			self.poderVerdadeiro = self.poderMaximo
+		self.poder = self.poderVerdadeiro/self.poderMaximo
 		
-		self.poderX = self.poderXVerdadeiro/self.poderMaximo
-		self.poderY = self.poderYVerdadeiro/self.poderMaximo
-		
-	def tirandoDedo(self, pos):
+	def tirandoDedo(self, dedo):
+		if dedo["id"]!=self.dedoPressionando: return
 		self.handlerX = self.x
 		self.handlerY = self.y
-		self.poderX = 0
-		self.poderY = 0
+		self.poder = 0
+		self.poderVerdadeiro = 0
 		self.dedoPressionando = None
 		
 	def show(self, display):

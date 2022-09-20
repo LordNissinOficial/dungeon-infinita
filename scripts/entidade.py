@@ -1,4 +1,5 @@
 from pygame import Rect
+from pygame.math import Vector2
 from scripts.animacaoManager import AnimacaoManager
  
 class Entidade():
@@ -40,8 +41,15 @@ class Entidade():
 				self.animacaoManager.ativar("parado cima")
 				
 	def mover(self, x, y, jogo, continuarMovendo=False):
-		self.x += x*2
-		self.y += y*2
+#		if x and y:
+#			self.x += int(x*1.5)
+#			self.y += int(y*1.5)
+#		else:
+		if x!=0 or y!=0:
+			vec = Vector2(x, y)
+			vec.scale_to_length(3)
+			self.x += int(vec.x)
+			self.y += int(vec.y)
 		
 	def podeMover(self, x, y, jogo):
 		pass
