@@ -20,8 +20,9 @@ class Jogo():
 		self.mapaDisplay = Surface((DISPLAY_TAMANHO)).convert()
 		#self.mapaManager = MapaManager(self.camera,  self)
 		self.botoes = {}
-		self.mapaManager.gerarLevel()
-	
+		pos = self.mapaManager.gerarLevel()
+		self.jogador.x, self.jogador.y = pos
+		print(self.jogador.x, self.jogador.y)
 	def setUp(self, cenaManager):
 		event.set_blocked(None)
 		event.set_allowed([QUIT, FINGERDOWN, FINGERUP, FINGERMOTION])

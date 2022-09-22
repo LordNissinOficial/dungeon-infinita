@@ -22,8 +22,6 @@ def main():
 		cenaManager.show(tela)
 		jogo = cenaManager.estados[cenaManager.estado]		
 		tela.blit(fonte.render(str(round(clock.get_fps())), 0, (237, 230, 200), (52, 49, 29)), (40, 40))
-#		tela.blit(fonte.render(str((jogo.botoes["joystick"].dedoPressionando, jogo.dedos)), 0, (100, 255, 255), (0, 0, 0)), (40, 60))
-#		tela.blit(fonte.render(str((jogo.jogador.x, jogo.jogador.y)), 0, (100, 255, 255), (0, 0, 0)), (40, 80))
 		update()
 		clock.tick(fps)
 
